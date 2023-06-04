@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void printPosition(int x, int y) {
+    printf("Robby's current position: (%d, %d)\n", x, y);
+}
+void processMove(char move, int* x, int* y) {
+    switch (move) {
+        case 'f':
+            (*y)++;
+            break;
+        case 'b':
+            (*y)--;
+            break;
+        case 'r':
+            (*x)++;
+            break;
+        case 'l':
+            (*x)--;
+            break;
+        default:
+            printf("Invalid move!\n");
+            break;
+    }
+}
+
+void writePositionToFile(const char* filename, int x, int y) {
+    FILE* file = fopen(filename, "a");
+
+    if (file == NULL) {
+        printf("Error opening file!\n");
+        return;
+    }
+
+    char position[20];
+    snprintf(position, sizeof(position), "%d,%d\n", x, y);
+    fputs(position, file);
+
+    fclose(file);
+}
+
+int main() {
+    int x = 0;
+    int y = 0;
+
+    printf("Robby's initial position: (%d, %d)\n", x, y);
+
+    char move;
+    printf("Enter moves (f-forward, b-backward, r-right, l-left). Enter 'q' to quit.\n");
+
+    char filename[50];
+    printf("Enter a filename to store positions: ");
+    scanf("%s", filename);
+
+    while (1) {
+        printf("Enter a move: ");
+        scanf(" %c", &move);
+
+        if (move == 'q') {
+            break;
+        }
+
+        processMove(move, &x, &y);
+        printPosition(x, y);
+        writePositionToFile(filename, x, y);
+    }
+
+    return 0;
+}
